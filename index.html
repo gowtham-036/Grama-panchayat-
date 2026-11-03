@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Gram Panchayat Services</title>
+<style>
+:root{--green:#176b3a;--green2:#0f512b;--pale:#eaf5ec;--bg:#f3f7f2;--ink:#203128;--muted:#64736a;--line:#d9e4da}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,var(--green2),#23834a);color:white;padding:26px 18px;text-align:center}
+header h1{margin:0 0 8px;font-size:clamp(23px,4vw,34px)}
+header p{margin:0;color:#e4f3e7}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:12px;background:#fff;box-shadow:0 2px 8px #163c2412;position:sticky;top:0;z-index:5}
+nav button{width:auto;margin:0;padding:10px 14px;border:1px solid var(--line);background:white;color:var(--green2);font-size:14px;border-radius:22px}
+nav button.active,nav button:hover{background:var(--green);color:white;border-color:var(--green)}
+main{max-width:1050px;margin:28px auto;padding:0 16px}
+.page{display:none}.page.active{display:block}
+.panel{background:white;padding:26px;border-radius:14px;box-shadow:0 4px 18px #183d2510;margin-bottom:20px}
+h2{color:var(--green);margin:0 0 18px;text-align:center}
+h3{color:var(--green);margin-top:0}
+.intro{text-align:center;line-height:1.7;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:22px}
+.card{background:var(--pale);border:1px solid #d7e9d9;border-radius:12px;padding:18px}
+.card h3{margin:0 0 8px}.card p{margin:0 0 14px;color:#53645a;line-height:1.5;font-size:14px}
+.card button{margin-top:0}
+form{max-width:680px;margin:auto}
+.field{margin:13px 0}
+label{display:block;font-weight:700;font-size:14px;margin-bottom:6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #bdcbbf;border-radius:8px;font-size:15px;background:#fff;color:var(--ink)}
+textarea{min-height:92px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid #a6d3b0;border-color:var(--green)}
+button,.action{display:inline-block;background:var(--green);color:white;border:0;border-radius:8px;padding:12px 16px;font-size:15px;cursor:pointer;text-decoration:none}
+button:hover,.action:hover{background:var(--green2)}
+form button{width:100%;margin-top:12px}
+.secondary{background:#e7f2e9;color:var(--green2);border:1px solid #c8dfcc}
+.secondary:hover{background:#d9ebdc}
+.note{background:#fff8df;border:1px solid #f0dfa1;padding:12px;border-radius:8px;color:#66551b;font-size:13px;line-height:1.5}
+.status{margin-top:14px;padding:12px;border-radius:8px;background:var(--pale);color:var(--green2);display:none;line-height:1.5}
+.links{text-align:center;margin-top:16px;color:var(--muted)}
+.links a{color:var(--green);font-weight:bold;cursor:pointer}
+footer{text-align:center;background:var(--green2);color:white;padding:18px;margin-top:36px;font-size:14px}
+.small{font-size:13px;color:var(--muted);line-height:1.5}
+@media(max-width:600px){.panel{padding:19px}nav{position:static}nav button{padding:9px 11px;font-size:13px}}
+.hidden{display:none!important}
+.rec{background:var(--pale);border:1px solid #d7e9d9;border-radius:10px;padding:14px;margin-bottom:10px;font-size:14px;line-height:1.6;word-break:break-word}
+.rec b{color:var(--green2)}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;background:#fff;border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--green2)}
+.rec button{width:auto;margin:6px 6px 0 0;padding:7px 12px;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Digital Gram Panchayat Services</h1>
+  <p>Smart Rural Governance | Citizen Service Portal</p>
+</header>
+<nav aria-label="Main navigation">
+  <button class="active" data-page="home">Home</button>
+  <button data-page="register" data-auth="out">Registration</button>
+  <button data-page="login" data-auth="out">Login</button>
+  <button data-page="birth">Birth Certificate</button>
+  <button data-page="death">Death Certificate</button>
+  <button data-page="certificate">Other Certificates</button>
+  <button data-page="tax">Tax Payment</button>
+  <button data-page="welfare">Welfare Schemes</button>
+  <button data-page="grievance">Grievance</button>
+  <button data-page="account" data-auth="in" class="hidden">My Account</button>
+  <button data-page="staff">Staff</button>
+  <button id="logoutBtn" data-auth="in" class="hidden" onclick="logout()">Logout</button>
+</nav>
+<main>
+<section id="home" class="page active">
+ <div class="panel">
+  <h2>Welcome to Digital Gram Panchayat</h2>
+  <p class="intro">Access important Panchayat services from one place. Select a service below to open its application form.</p>
+  <div class="cards">
+   <article class="card"><h3>Birth Certificate</h3><p>Apply for a birth certificate by providing child and parent details.</p><button onclick="showPage('birth')">Open service</button></article>
+   <article class="card"><h3>Death Certificate</h3><p>Apply for a death certificate by providing the details of the deceased person.</p><button onclick="showPage('death')">Open service</button></article>
+   <article class="card"><h3>Tax Payment</h3><p>Enter property and assessment details for Panchayat tax payment.</p><button onclick="showPage('tax')">Open service</button></article>
+   <article class="card"><h3>Welfare Schemes</h3><p>View housing, scholarship, employment and health scheme information.</p><button onclick="showPage('welfare')">Open service</button></article>
+   <article class="card"><h3>Grievance Registration</h3><p>Submit a complaint about local services and keep its reference ID.</p><button onclick="showPage('grievance')">Open service</button></article>
+   <article class="card"><h3>Other Certificates</h3><p>Apply for Residence, Income or Caste certificates.</p><button onclick="showPage('certificate')">Open service</button></article>
+   <article class="card"><h3>Citizen Account</h3><p>Create an account or open the login page.</p><button onclick="showPage('register')">Register</button></article>
+  </div>
+ </div>
+</section>
+
+<section id="register" class="page">
+ <div class="panel"><h2>Citizen Registration</h2>
+  <form data-kind="Registration">
+   <div class="field"><label>Full Name</label><input name="name" required placeholder="Enter your full name"></div>
+   <div class="field"><label>Mobile Number</label><input name="mobile" type="tel" required pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number"></div>
+   <div class="field"><label>Email Address</label><input name="email" type="email" required placeholder="Enter email address"></div>
+   <div class="field"><label>Date of Birth</label><input name="dob" type="date" required></div>
+   <div class="field"><label>Gender</label><select name="gender" required><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+   <div class="field"><label>Village Name</label><input name="village" required placeholder="Enter village name"></div>
+   <div class="field"><label>Address</label><textarea name="address" placeholder="Enter your address"></textarea></div>
+   <div class="field"><label>Select Required Service</label><select name="service"><option value="">Select Service</option><option>Birth Certificate</option><option>Death Certificate</option><option>Tax Payment</option><option>Welfare Scheme Application</option><option>Grievance Registration</option></select></div>
+   <div class="field"><label>Create Password</label><input name="password" type="password" minlength="6" required placeholder="At least 6 characters"></div>
+   <button type="submit">Register</button><div class="status"></div>
+  </form>
+  <p class="links">Already registered? <a onclick="showPage('login')">Login here</a></p>
+ </div>
+</section>
+
+<section id="login" class="page">
+ <div class="panel"><h2>Citizen Login</h2>
+  <form data-kind="Login">
+   <div class="field"><label>Email / Mobile Number</label><input name="identity" required placeholder="Enter email or mobile number"></div>
+   <div class="field"><label>Password</label><input name="password" type="password" required placeholder="Enter password"></div>
+   <button type="submit">Login</button><div class="status"></div>
+  </form>
+  <p class="links"><a onclick="showPage('forgot')">Forgot Password?</a> &nbsp;|&nbsp; New user? <a onclick="showPage('register')">Register here</a></p>
+ </div>
+</section>
+
+<section id="forgot" class="page">
+ <div class="panel"><h2>Forgot Password</h2><p class="intro">Enter your registered email or mobile number and choose a new password.</p>
+  <form data-kind="Password Reset">
+   <div class="field"><label>Email / Mobile Number</label><input name="identity" required placeholder="Registered email or mobile number"></div>
+   <div class="field"><label>New Password</label><input name="password" type="password" minlength="6" required></div>
+   <div class="field"><label>Confirm New Password</label><input name="confirm" type="password" minlength="6" required></div>
+   <button type="submit">Reset Password</button><div class="status"></div>
+  </form>
+  <p class="links"><a onclick="showPage('login')">Back to Login</a></p>
+ </div>
+</section>
+
+<section id="birth" class="page">
+ <div class="panel"><h2>Apply for Birth Certificate</h2>
+  <form data-kind="Birth Certificate">
+   <div class="field"><label>Child Name</label><input name="childName" required placeholder="Enter child's name"></div>
+   <div class="field"><label>Date of Birth</label><input name="dob" type="date" required></div>
+   <div class="field"><label>Gender</label><select name="gender" required><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+   <div class="field"><label>Father Name</label><input name="fatherName" required></div>
+   <div class="field"><label>Mother Name</label><input name="motherName" required></div>
+   <div class="field"><label>Place of Birth</label><input name="birthPlace" required></div>
+   <div class="field"><label>Village Name</label><input name="village" required></div>
+   <div class="field"><label>Parent Mobile Number</label><input name="mobile" type="tel" pattern="[0-9]{10}" maxlength="10" required></div>
+   <div class="field"><label>Address</label><textarea name="address"></textarea></div>
+   <div class="field"><label>Upload Hospital / Proof Document</label><input name="proof" type="file" accept=".pdf,.jpg,.jpeg,.png"></div>
+   <button type="submit">Submit Application</button><div class="status"></div>
+  </form>
+ </div>
+</section>
+
+<section id="tax" class="page">
+ <div class="panel"><h2>Panchayat Tax Payment</h2>
+  <form data-kind="Tax Payment">
+   <div class="field"><label>Property Owner Name</label><input name="owner" required></div>
+   <div class="field"><label>Property ID</label><input name="propertyId" required></div>
+   <div class="field"><label>Mobile Number</label><input name="mobile" type="tel" pattern="[0-9]{10}" maxlength="10" required></div>
+   <div class="field"><label>Village Name</label><input name="village" required></div>
+   <div class="field"><label>Tax Type</label><select name="taxType" required><option value="">Select Tax Type</option><option>House Tax</option><option>Water Tax</option><option>Property Tax</option><option>Professional Tax</option></select></div>
+   <div class="field"><label>Assessment Year</label><select name="year" required><option value="">Select Year</option><option>2025-2026</option><option>2026-2027</option><option>2027-2028</option></select></div>
+   <div class="field"><label>Tax Amount (₹)</label><input name="amount" type="number" min="1" required></div>
+   <div class="field"><label>Payment Method</label><select name="method" required><option value="">Select Payment Method</option><option>UPI</option><option>Debit Card</option><option>Credit Card</option><option>Net Banking</option></select></div>
+   <div class="field"><label>Transaction ID</label><input name="transactionId" placeholder="Enter transaction ID"></div>
+   <div class="field"><label>Address</label><textarea name="address" placeholder="Enter property address"></textarea></div>
+   <button type="submit">Submit Tax Details</button><div class="status"></div>
+   <p class="note">Demo only: this form does not process real payments. Do not enter actual card, UPI PIN or banking credentials.</p>
+  </form>
+ </div>
+</section>
+
+<section id="welfare" class="page">
+ <div class="panel"><h2>Government Welfare Schemes</h2>
+  <div class="cards">
+   <article class="card"><h3>Housing Scheme</h3><p>Apply for government housing assistance schemes for eligible rural families.</p></article>
+   <article class="card"><h3>Scholarship Scheme</h3><p>Apply for educational support and scholarship programs.</p></article>
+   <article class="card"><h3>Employment Scheme</h3><p>Get information and apply for rural employment opportunities.</p></article>
+   <article class="card"><h3>Health Scheme</h3><p>Access government healthcare benefits and medical assistance programs.</p></article>
+  </div>
+  <h2 style="margin-top:28px">Scheme Application Form</h2>
+  <form data-kind="Welfare Scheme">
+   <div class="field"><label>Applicant Name</label><input name="name" required></div>
+   <div class="field"><label>Mobile Number</label><input name="mobile" type="tel" pattern="[0-9]{10}" maxlength="10" required></div>
+   <div class="field"><label>Aadhaar Number</label><input name="aadhaar" inputmode="numeric" pattern="[0-9]{12}" maxlength="12" required placeholder="12-digit Aadhaar number"></div>
+   <div class="field"><label>Village Name</label><input name="village" required></div>
+   <div class="field"><label>Select Scheme</label><select name="scheme" required><option value="">Select Welfare Scheme</option><option>Housing Scheme</option><option>Scholarship Scheme</option><option>Employment Scheme</option><option>Health Scheme</option></select></div>
+   <div class="field"><label>Annual Family Income (₹)</label><input name="income" type="number" min="0"></div>
+   <div class="field"><label>Address</label><textarea name="address"></textarea></div>
+   <div class="field"><label>Upload Supporting Documents</label><input name="proof" type="file" accept=".pdf,.jpg,.jpeg,.png"></div>
+   <button type="submit">Submit Scheme Application</button><div class="status"></div>
+  </form>
+ </div>
+</section>
+
+<section id="grievance" class="page">
+ <div class="panel"><h2>Register Your Grievance</h2>
+  <form data-kind="Grievance">
+   <div class="field"><label>Applicant Name</label><input name="name" required></div>
+   <div class="field"><label>Mobile Number</label><input name="mobile" type="tel" pattern="[0-9]{10}" maxlength="10" required></div>
+   <div class="field"><label>Email Address</label><input name="email" type="email"></div>
+   <div class="field"><label>Village Name</label><input name="village" required></div>
+   <div class="field"><label>Grievance Category</label><select name="category" required><option value="">Select Category</option><option>Water Supply</option><option>Road Issues</option><option>Electricity Problem</option><option>Sanitation</option><option>Government Services</option><option>Other</option></select></div>
+   <div class="field"><label>Grievance Subject</label><input name="subject" required></div>
+   <div class="field"><label>Describe Your Problem</label><textarea name="description" required placeholder="Write your complaint details here"></textarea></div>
+   <div class="field"><label>Upload Supporting Document</label><input name="proof" type="file" accept=".pdf,.jpg,.jpeg,.png"></div>
+   <button type="submit">Submit Grievance</button><div class="status"></div>
+  </form>
+  <div class="card" style="margin-top:24px"><h3>Track Grievance Status</h3>
+   <div class="field"><label>Grievance ID</label><input id="trackId" placeholder="Enter Grievance ID"></div>
+   <button onclick="trackGrievance()">Check Status</button><div id="trackResult" class="status"></div>
+  </div>
+ </div>
+</section>
+
+<section id="death" class="page">
+ <div class="panel"><h2>Apply for Death Certificate</h2>
+  <form data-kind="Death Certificate">
+   <div class="field"><label>Name of Deceased Person</label><input name="deceasedName" required></div>
+   <div class="field"><label>Date of Death</label><input name="dateOfDeath" type="date" required></div>
+   <div class="field"><label>Gender</label><select name="gender" required><option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+   <div class="field"><label>Age</label><input name="age" type="number" min="0" max="130" required></div>
+   <div class="field"><label>Father / Husband Name</label><input name="fatherOrHusband" required></div>
+   <div class="field"><label>Place of Death</label><input name="placeOfDeath" required></div>
+   <div class="field"><label>Village Name</label><input name="village" required></div>
+   <div class="field"><label>Informant Name</label><input name="informantName" required></div>
+   <div class="field"><label>Informant Mobile Number</label><input name="mobile" type="tel" pattern="[0-9]{10}" maxlength="10" required></div>
+   <div class="field"><label>Address</label><textarea name="address"></textarea></div>
+   <div class="field"><label>Upload Hospital / Proof Document</label><input name="proof" type="file" accept=".pdf,.jpg,.jpeg,.png"></div>
+   <button type="submit">Submit Application</button><div class="status"></div>
+  </form>
+ </div>
+</section>
+
+<section id="certificate" class="page">
+ <div class="panel"><h2>Residence / Income / Caste Certificate</h2>
+  <form data-kind="Other Certificate">
+   <div class="field"><label>Certificate Type</label><select name="certificateType" required><option value="">Select Certificate</option><option>Residence Certificate</option><option>Income Certificate</option><option>Caste Certificate</option></select></div>
+   <div class="field"><label>Applicant Name</label><input name="applicantName" required></div>
+   <div class="field"><label>Father Name</label><input name="fatherName" required></div>
+   <div class="field"><label>Village Name</label><input name="village" required></div>
+   <div class="field"><label>Mobile Number</label><input name="mobile" type="tel" pattern="[0-9]{10}" maxlength="10" required></div>
+   <div class="field"><label>Annual Family Income (₹) - for Income Certificate</label><input name="income" type="number" min="0"></div>
+   <div class="field"><label>Purpose of Certificate</label><input name="purpose" required></div>
+   <div class="field"><label>Address</label><textarea name="address"></textarea></div>
+   <div class="field"><label>Upload Supporting Document</label><input name="proof" type="file" accept=".pdf,.jpg,.jpeg,.png"></div>
+   <button type="submit">Submit Application</button><div class="status"></div>
+  </form>
+ </div>
+</section>
+
+<section id="account" class="page">
+ <div class="panel"><h2>My Account</h2>
+  <div id="accInfo"></div>
+  <h3>Update Citizen Information</h3>
+  <form id="updateForm">
+   <div class="field"><label>Mobile Number</label><input id="upMobile" name="mobile" type="tel" pattern="[0-9]{10}" maxlength="10" required></div>
+   <div class="field"><label>Address</label><textarea id="upAddress" name="address"></textarea></div>
+   <button type="submit">Update Information</button><div class="status"></div>
+  </form>
+  <h3 style="margin-top:28px">My Applications and Grievances</h3>
+  <div id="accRecords"></div>
+ </div>
+</section>
+
+<section id="staff" class="page">
+ <div class="panel"><h2>Panchayat Staff Panel</h2>
+  <div id="staffLoginBox">
+   <form id="staffForm">
+    <div class="field"><label>Staff Username</label><input name="username" required></div>
+    <div class="field"><label>Staff Password</label><input name="password" type="password" required></div>
+    <button type="submit">Staff Login</button><div class="status"></div>
+   </form>
+  </div>
+  <div id="staffBox" class="hidden">
+   <p><button class="secondary" style="width:auto" onclick="staffLogout()">Staff Logout</button></p>
+   <h3>Applications</h3><div id="staffApps"></div>
+   <h3>Grievances</h3><div id="staffGrv"></div>
+   <h3>Registered Citizens</h3><div id="staffCit"></div>
+  </div>
+ </div>
+</section>
+</main>
+<footer>© 2026 Digital Gram Panchayat Services | Smart Rural Governance</footer>
+<script>
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+let token=sessionStorage.getItem('dgpToken')||'';
+let staffToken=sessionStorage.getItem('dgpStaff')||'';
+
+async function api(path,body,tok){
+ const opt={headers:{'Content-Type':'application/json'}};
+ if(tok)opt.headers['X-Token']=tok;
+ if(body!==undefined){opt.method='POST';opt.body=JSON.stringify(body)}
+ try{
+  const r=await fetch('/api/'+path,opt);
+  const j=await r.json().catch(()=>({error:'Unexpected response from the server.'}));
+  return Object.assign({},j,{ok:r.ok,code:r.status});
+ }catch(e){
+  return {ok:false,code:0,error:'Cannot reach the Java server. Start DigitalGramPanchayat first and open http://localhost:8080'};
+ }
+}
+function showMsg(el,msg){el.textContent=msg;el.style.display='block'}
+
+function updateAuth(){
+ document.querySelectorAll('[data-auth="in"]').forEach(e=>e.classList.toggle('hidden',!token));
+ document.querySelectorAll('[data-auth="out"]').forEach(e=>e.classList.toggle('hidden',!!token));
+}
+function logout(){token='';sessionStorage.removeItem('dgpToken');updateAuth();showPage('home')}
+
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ window.scrollTo({top:0,behavior:'smooth'});
+ if(id==='account')loadAccount();
+ if(id==='staff'&&staffToken)loadStaff();
+}
+document.querySelectorAll('nav button[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+
+/* ---------- generic forms ---------- */
+document.querySelectorAll('form[data-kind]').forEach(form=>{
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const kind=form.dataset.kind,data={};
+  new FormData(form).forEach((v,k)=>{data[k]=(v instanceof File)?v.name:v});
+  const status=form.querySelector('.status');
+
+  if(kind==='Registration'){
+   const r=await api('register',data);
+   showMsg(status,r.ok?r.message:r.error);
+   if(r.ok)form.reset();
+   return;
+  }
+  if(kind==='Login'){
+   const r=await api('login',data);
+   if(r.ok){token=r.token;sessionStorage.setItem('dgpToken',token);form.reset();status.style.display='none';updateAuth();showPage('account')}
+   else showMsg(status,r.error);
+   return;
+  }
+  if(kind==='Password Reset'){
+   if(data.password!==data.confirm){showMsg(status,'The new password and confirmation do not match.');return}
+   const r=await api('reset',data);
+   showMsg(status,r.ok?r.message:r.error);
+   return;
+  }
+  if(!token){showMsg(status,'Please login first to submit this form.');return}
+  data.kind=kind;
+  const r=await api('apply',data,token);
+  if(r.ok){
+   showMsg(status,kind+' submitted successfully. Reference ID: '+r.id+' | Status: '+r.status+'. Only the file name of any uploaded document is recorded.');
+   form.reset();
+  }else{
+   showMsg(status,r.error);
+   if(r.code===401)logout();
+  }
+ });
+});
+
+/* ---------- records ---------- */
+const HIDE=['id','kind','status','staffRemark','createdAt','citizenId','citizenName'];
+function recHtml(r,staff){
+ const details=Object.keys(r).filter(k=>!HIDE.includes(k)&&r[k]!=='').map(k=>esc(k)+': '+esc(r[k])).join(' | ');
+ let h='<div class="rec"><b>'+esc(r.id)+'</b> - '+esc(r.kind)+' <span class="badge">'+esc(r.status)+'</span><br>';
+ if(staff)h+='Citizen: '+esc(r.citizenName)+' (ID '+esc(r.citizenId)+')<br>';
+ h+='<span class="small">'+details+'</span><br>Staff remark: '+esc(r.staffRemark)+'<br><span class="small">Submitted: '+esc(new Date(r.createdAt).toLocaleString())+'</span>';
+ return h;
+}
+
+/* ---------- citizen account ---------- */
+async function loadAccount(){
+ if(!token)return;
+ const r=await api('me',undefined,token);
+ const info=document.getElementById('accInfo');
+ if(!r.ok){info.textContent=r.error;if(r.code===401)logout();return}
+ const c=r.citizen;
+ info.innerHTML='<div class="rec"><b>Citizen ID:</b> '+esc(c.id)+'<br><b>Name:</b> '+esc(c.name)+'<br><b>Email:</b> '+esc(c.email)+'<br><b>Mobile:</b> '+esc(c.mobile)+'<br><b>Village:</b> '+esc(c.village)+'<br><b>Address:</b> '+esc(c.address)+'</div>';
+ document.getElementById('upMobile').value=c.mobile||'';
+ document.getElementById('upAddress').value=c.address||'';
+ const all=r.applications.concat(r.grievances).sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+ document.getElementById('accRecords').innerHTML=all.length?all.map(x=>recHtml(x,false)+'</div>').join(''):'<p class="small">No applications or grievances yet.</p>';
+}
+document.getElementById('updateForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const d=Object.fromEntries(new FormData(e.target));
+ const s=e.target.querySelector('.status');
+ const r=await api('me/update',d,token);
+ showMsg(s,r.ok?r.message:r.error);
+ if(r.ok)loadAccount();
+ else if(r.code===401)logout();
+});
+
+/* ---------- track grievance / application ---------- */
+async function trackGrievance(){
+ const id=document.getElementById('trackId').value.trim(),out=document.getElementById('trackResult');
+ const r=await api('track?id='+encodeURIComponent(id));
+ showMsg(out,r.ok?r.kind+' '+r.id+' | Status: '+r.status+' | Remark: '+r.staffRemark+' | Submitted: '+new Date(r.createdAt).toLocaleString():r.error);
+}
+
+/* ---------- staff panel ---------- */
+document.getElementById('staffForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const d=Object.fromEntries(new FormData(e.target));
+ const s=e.target.querySelector('.status');
+ const r=await api('staff/login',d);
+ if(r.ok){staffToken=r.token;sessionStorage.setItem('dgpStaff',staffToken);e.target.reset();s.style.display='none';loadStaff()}
+ else showMsg(s,r.error);
+});
+function staffLogout(){
+ staffToken='';sessionStorage.removeItem('dgpStaff');
+ document.getElementById('staffBox').classList.add('hidden');
+ document.getElementById('staffLoginBox').classList.remove('hidden');
+}
+function sbtn(id,action,label){return '<button onclick="staffAct(\''+esc(id)+'\',\''+action+'\')">'+label+'</button>'}
+function staffButtons(r,isGrv){
+ if(['APPROVED','REJECTED','RESOLVED'].includes(r.status))return '';
+ let b='';
+ if(isGrv){b+=sbtn(r.id,'progress','In Progress')+sbtn(r.id,'resolve','Resolve')}
+ else{if(r.status==='SUBMITTED')b+=sbtn(r.id,'verify','Verify');b+=sbtn(r.id,'approve','Approve')}
+ return b+sbtn(r.id,'reject','Reject');
+}
+async function loadStaff(){
+ const r=await api('staff/data',undefined,staffToken);
+ if(!r.ok){staffLogout();return}
+ document.getElementById('staffLoginBox').classList.add('hidden');
+ document.getElementById('staffBox').classList.remove('hidden');
+ document.getElementById('staffApps').innerHTML=r.applications.length?r.applications.map(x=>recHtml(x,true)+'<br>'+staffButtons(x,false)+'</div>').join(''):'<p class="small">No applications yet.</p>';
+ document.getElementById('staffGrv').innerHTML=r.grievances.length?r.grievances.map(x=>recHtml(x,true)+'<br>'+staffButtons(x,true)+'</div>').join(''):'<p class="small">No grievances yet.</p>';
+ document.getElementById('staffCit').innerHTML=r.citizens.map(c=>'<div class="rec"><b>'+esc(c.id)+'</b> - '+esc(c.name)+'<br><span class="small">'+esc(c.mobile)+' | '+esc(c.email)+' | '+esc(c.village)+'</span></div>').join('');
+}
+async function staffAct(id,action){
+ let remark='';
+ if(action==='reject'){remark=prompt('Enter rejection reason:');if(!remark)return}
+ const r=await api('staff/update',{id:id,action:action,remark:remark},staffToken);
+ if(!r.ok){alert(r.error);if(r.code===401)staffLogout();return}
+ loadStaff();
+}
+
+updateAuth();
+</script>
+</body>
+</html>
